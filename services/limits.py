@@ -5,7 +5,12 @@ from db import update_usage, reset_daily_usage
 
 
 def check_and_use_limit(user):
-    user_id, is_sub, sub_until, daily_used, last_reset = user
+    user_id = user[0]
+    is_sub = user[1]
+    sub_until = user[2]
+    daily_used = user[3]
+    last_reset = user[4]
+
 
     now = datetime.utcnow()
     last_reset_dt = datetime.fromisoformat(last_reset)
