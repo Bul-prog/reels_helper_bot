@@ -6,6 +6,33 @@ from config import (
     YC_FOLDER_ID,
 )
 from ui.messages import API_URL
+import time
+
+_IAM_CACHE = {
+    "token": None,
+    "expires_at": 0,
+}
+
+def get_iam_token() -> str:
+    now = time.time()
+
+    if _IAM_CACHE["token"] and now < _IAM_CACHE["expires_at"]:
+        return _IAM_CACHE["token"]
+
+    resp = requests.post(
+        "https://iam.api.cloud.yandex.net/iam/v1/tokens",
+        json={"yandexPassportOauthToken": YC_OAUTH_TOKEN},
+        timeout=10
+    )
+    resp.raise_for_status()
+
+    iam_token = resp.json()["iamToken"]
+
+    # IAM живёт ~12 часов, берём с запасом
+    _IAM_CACHE["token"] = iam_token
+    _IAM_CACHE["expires_at"] = now + 60 * 60 * 10  # 10 часов
+
+    return iam_token
 
 
 def generate_text(prompt: str) -> str:
@@ -21,13 +48,13 @@ def generate_text(prompt: str) -> str:
             "«Пять минут в день, которые сделают тебя продуктивнее уже завтра»"
         )
 
-    if not YC_IAM_TOKEN or not YC_FOLDER_ID:
-        raise RuntimeError(
-            "YC_IAM_TOKEN или YC_FOLDER_ID не заданы"
-        )
+    if not YC_OAUTH_TOKEN or not YC_FOLDER_ID:
+        raise RuntimeError("YC_OAUTH_TOKEN или YC_FOLDER_ID не заданы")
+
+    iam_token = get_iam_token()
 
     headers = {
-        "Authorization": f"Bearer {YC_IAM_TOKEN}",
+        "Authorization": f"Bearer {iam_token}",
         "Content-Type": "application/json",
     }
 

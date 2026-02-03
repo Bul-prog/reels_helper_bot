@@ -22,6 +22,8 @@ if not BASE_URL and not MOCK_MODE:
 # Yandex Cloud
 YC_IAM_TOKEN = os.getenv("YC_IAM_TOKEN")
 YC_FOLDER_ID = os.getenv("YC_FOLDER_ID")
+YC_OAUTH_TOKEN = os.getenv("YC_OAUTH_TOKEN")
+
 
 # Лимиты
 FREE_DAILY_LIMIT = 5
