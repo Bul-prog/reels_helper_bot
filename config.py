@@ -24,7 +24,7 @@ YC_IAM_TOKEN = os.getenv("YC_IAM_TOKEN")
 YC_FOLDER_ID = os.getenv("YC_FOLDER_ID")
 
 # Лимиты
-FREE_DAILY_LIMIT = 1
+FREE_DAILY_LIMIT = 5
 PRO_DAILY_LIMIT = 20
 
 # Подписка
