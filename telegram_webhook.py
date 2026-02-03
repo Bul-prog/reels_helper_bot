@@ -17,7 +17,7 @@ router = APIRouter()
 
 # Telegram application (python-telegram-bot)
 telegram_app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
-
+initialized = False
 telegram_app.add_handler(CommandHandler("start", start))
 telegram_app.add_handler(CallbackQueryHandler(choose_type, pattern="^(hook|script|ads)$"))
 telegram_app.add_handler(CallbackQueryHandler(subscribe, pattern="^subscribe$"))
@@ -27,7 +27,14 @@ telegram_app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, generat
 
 @router.post("/telegram/webhook")
 async def telegram_webhook(request: Request):
+    global initialized
+
+    if not initialized:
+        await telegram_app.initialize()
+        initialized = True
+
     data = await request.json()
     update = Update.de_json(data, telegram_app.bot)
     await telegram_app.process_update(update)
     return {"ok": True}
+
