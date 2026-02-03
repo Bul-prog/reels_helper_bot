@@ -4,6 +4,7 @@ from config import (
     MOCK_MODE,
     YC_IAM_TOKEN,
     YC_FOLDER_ID,
+    YC_OAUTH_TOKEN,
 )
 from ui.messages import API_URL
 import time
