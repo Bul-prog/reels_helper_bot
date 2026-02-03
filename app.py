@@ -1,11 +1,13 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 
+from telegram_webhook import router as telegram_router
 from webhooks.webhook_yookassa import router as yookassa_router
 
 app = FastAPI()
 
 app.include_router(yookassa_router, prefix="/webhooks")
+app.include_router(telegram_router)
 
 
 @app.get("/payment/success", response_class=HTMLResponse)
